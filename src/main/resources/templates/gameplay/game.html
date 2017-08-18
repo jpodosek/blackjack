@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blackjack Game</title>
+<style>
+h1 {
+	text-align: center;
+}
+
+div {
+	
+}
+
+body {
+	background: #f06d06;
+	font-size: 80%;
+	padding: 20px;
+}
+
+.container {
+	align-items: flex-start| flex-end| center| baseline| stretch;
+	background-color: green;
+}
+
+.nowrap {
+	-webkit-flex-wrap: nowrap;
+	flex-wrap: nowrap;
+}
+</style>
+</head>
+<body>
+	<h1>Play Some Blackjack</h1>
+	<main class="container nowrap">
+	<div class="playername">Dealer</div>
+	<br>
+	<hr>
+	<div class="playername">You</div>
+	<div class="cardimage"><img src="src/main/resources/static/PlayingCardImages/10_of_clubs.png" alt="" height="100" width="100"/></div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div class="buttons">
+		<form method="POST" action="/game/hit">
+			<button>HIT</button>
+		</form>
+		<form method="POST" action="/game/stay">
+			<button>STAY</button>
+		</form>
+	</div>
+	Current Bet: {{betAmount}}
+	$<!--moneyRemaining -->
+	</main>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blackjack Game</title>
+<style>
+h1 {text-align: center;}
+div {
+	display: block;
+	text-align: center;
+}
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+  padding: 20px;
+}
+
+main {
+  position: relative;
+  background: white;
+  height: 200px;
+  width: 60%;
+   margin: 0 auto;
+  padding: 20px;
+  resize: both;
+  overflow: auto;
+ }
+
+main div {
+  background: green;
+  color: white;
+  width: 200px;
+  height: 100px;
+  margin: -70px 0 0 -120px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+	<h1>Play Some Blackjack</h1>
+	
+	<main>
+	<div>Dealer
+	<p>i am the dealer</p>
+	<br><br><br><br><br><br><br>
+	</div>
+	<hr>
+	<div>You</div>
+	<br>
+	<div>
+	<form method="POST" action="gameplay/bet">
+		$<input type="number" name="betAmount" type="number" max="100"
+			min="0" autofocus required>
+		<button>BET</button>
+	</form>
+	</div>
+	</main>
+</body>
+</html>
