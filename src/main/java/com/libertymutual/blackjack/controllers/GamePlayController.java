@@ -75,16 +75,18 @@ public class GamePlayController {
 		//create new user hand
 		userHand = new Hand();
 		
-		//draw cards from deck
-		Card userCard1 = deck.drawCard();  
-		Card userCard2 = deck.drawCard();
-		
-		//add cards to hand
-		userHand.addCard(userCard1); 
-		userHand.addCard(userCard2);
-		
+//		//draw cards from deck
+//		Card userCard1 = deck.drawCard();  
+//		Card userCard2 = deck.drawCard();
+
 		//assign hand to player object
 		user.setHand(userHand); 
+				
+		//add cards to hand
+		userHand.addCard(deck.drawCard()); 
+		userHand.addCard(deck.drawCard());
+		
+		
 		
 		//add userHand to model
 		model.addAttribute("userHand", userHand);
@@ -127,6 +129,14 @@ public class GamePlayController {
 		// if userHand == 21, blackjack - dealer has chance to match
 
 		// if
+		userHand.addCard(deck.drawCard()); 
+
+		
+		
+		
+		
+		
+		
 		model.addAttribute("betAmount", betAmount);
 		model.addAttribute("userHand", userHand);
 		model.addAttribute("dealerHand", dealerHand);
