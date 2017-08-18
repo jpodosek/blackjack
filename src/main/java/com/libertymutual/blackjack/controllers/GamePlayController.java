@@ -110,6 +110,7 @@ public class GamePlayController {
 		//add userHand to model
 		model.addAttribute("dealerHand", dealerHand);
 		
+
 		return "gameplay/game"; // take user to game page and display bet	
 		
 	//deal a hand

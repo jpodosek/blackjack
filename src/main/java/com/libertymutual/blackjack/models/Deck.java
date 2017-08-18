@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Deck {
+	
 	private ArrayList<Card> deck;
 	String[] suit = { "clubs", "spades", "diamonds", "hearts" };
 	String[] rank = { "ACE", "2", "3", "4", "5", "6", "7", "8", "9", "10", "JACK", "QUEEN", "KING" };
-	// private Card[] deck;
 	private int cardsLeft;
-	// Shuffle method
-	// drawSingleCard
-	// dealInitialcards
 
 	// Constructor
 	public Deck() {
@@ -43,7 +40,6 @@ public class Deck {
 		    deck.set(i, deck.get(j));
 		    deck.set(j, card);
 		}
-//		System.out.print(deck);
 	}
 	
 	public Card drawCard() {	
@@ -54,22 +50,5 @@ public class Deck {
 		cardsLeft--;
 		return drawnCard;
 	}
-
-	/*
-	 * maybe a simpler way to do it (or understand) deck = new Card[52]; int index =
-	 * 0; // How many cards have been created so far. for (int suit = 0; suit <= 3;
-	 * suit+=1) { for (int rank = 1; rank <= 13; rank+=1) { deck[index+=1] = new
-	 * Card(rank,suit);
-	 * 
-	 * } //System.out.println(deck[index]); } }
-	 */
-	// cardsUsed = 0;
-
-	// }
-	// interogate card - 2 methods - whats the value, what's the suit?
-
-	// Methods
-
-	// DealCard()
 
 }
