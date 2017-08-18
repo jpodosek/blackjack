@@ -32,8 +32,13 @@ body {
 	<h1>Play Some Blackjack</h1>
 	<main class="container nowrap">
 	<div class="playername">Dealer</div>
+	<div>{{#dealerHand.cards}}
+	<div>{{rank}} of {{suit}}</div>
+	{{/dealerHand.cards}}
+	</div>
 	<br>
 	<hr>
+	
 	<div class="playername">You</div>
 	<div>{{#userHand.cards}}
 	<div>{{rank}} of {{suit}}</div>
@@ -45,14 +50,14 @@ body {
 	<br>
 	<br>
 	<div class="buttons">
-		<form method="POST" action="/game/hit">
+		<form method="POST" action="/gameplay/hit">
 			<button>HIT</button>
 		</form>
-		<form method="POST" action="/game/stay">
+		<form method="POST" action="/gameplay/stay">
 			<button>STAY</button>
 		</form>
 	</div>
-	Current Bet: {{betAmount}}
+	Current Bet: {{ betAmount }}
 	$<!--moneyRemaining -->
 	</main>
 </body>

@@ -24,6 +24,9 @@ public class GamePlayController {
 	private int betAmount;
 	private Player user;
 	private Player dealer;
+	Deck deck; 
+	Hand userHand;
+	Hand dealerHand;
 	
 	
 	public GamePlayController() {	
@@ -56,30 +59,56 @@ public class GamePlayController {
 		return "gameplay/rules";
 	}
 
-	/*
-	 * @PostMapping("pregame") public int getBetAmount(int theNumber) { // Spring
-	 * puts the value of 'theNumber' from the form into this return theNumber; }
-	 */
+	
 	// The bet amount on pregame posts to game; this post below picks up that value
 	// and adds to model to render
+	//Kicking off the Game
 	@PostMapping("bet")
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
-		this.betAmount = betAmount; //set bet amount;
+		//get get amount and display
+		this.betAmount = betAmount; 
 		model.addAttribute("betAmount", betAmount); // add to model, display on game.html
 		
-		Deck deck = new Deck(); //Create new shuffled Deck;		
-		Hand userHand = new Hand();	 //create new hand
-		Card userCard1 = deck.drawCard(); 
+		//Create new shuffled Deck;	
+		deck = new Deck(); 
+		
+		//create new user hand
+		userHand = new Hand();
+		
+		//draw cards from deck
+		Card userCard1 = deck.drawCard();  
 		Card userCard2 = deck.drawCard();
 		
-		userHand.addCard(userCard1); //add card to hand
-		userHand.addCard(userCard2);//add card to hand
-		user.setHand(userHand); //assign hand to player object
+		//add cards to hand
+		userHand.addCard(userCard1); 
+		userHand.addCard(userCard2);
 		
+		//assign hand to player object
+		user.setHand(userHand); 
+		
+		//add userHand to model
 		model.addAttribute("userHand", userHand);
 		
+		//
 		
+		//Create new shuffled Deck;	
 		
+		//create new dealer hand
+		dealerHand = new Hand();
+		
+//		//draw cards from deck
+//		Card dealerCard1 = deck.drawCard();  
+//		Card dealerCard2 = deck.drawCard();
+		
+		//add cards to hand
+		dealerHand.addCard(deck.drawCard()); 
+		dealerHand.addCard(deck.drawCard());
+		
+		//assign hand to player object
+		dealer.setHand(dealerHand); 
+		
+		//add userHand to model
+		model.addAttribute("dealerHand", dealerHand);
 		
 		return "gameplay/game"; // take user to game page and display bet	
 		
@@ -88,20 +117,28 @@ public class GamePlayController {
 	
 	
 
-//	@PostMapping("hit")
-//	public String hitMe() {
-//		// deal a card to user
-//		// if userHandTotal > 21 -- BUST
-//		// remaining money = remaining money - bet
-//		// redirect back to "gameplay/pregame" page
-//		// if userHand == 21, blackjack - dealer has chance to match
-//
-//		// if
-//		return "gameplay/game"; // take user to game page and display bet
-//	}
+	@PostMapping("hit")
+	public String hitMe(Model model) {
+		// deal a card to user
+		// if userHandTotal > 21 -- BUST
+	// remaining money = remaining money - bet
+		// redirect back to "gameplay/pregame" page
+		// if userHand == 21, blackjack - dealer has chance to match
 
-	// *-----------------------------------------------------logic
-
+		// if
+		model.addAttribute("betAmount", betAmount);
+		model.addAttribute("userHand", userHand);
+		model.addAttribute("dealerHand", dealerHand);
+		return "gameplay/game"; // take user to game page and display bet
+	}
+	
+	@PostMapping("stay")
+	public String Stay(Model model) {
+		model.addAttribute("betAmount", betAmount);
+		model.addAttribute("userHand", userHand);
+		model.addAttribute("dealerHand", dealerHand);
+		return "gameplay/game"; // take user to game page and display bet
+	}
 	
 }
 

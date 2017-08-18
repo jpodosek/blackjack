@@ -11,8 +11,8 @@ public class GamePlay {
 	
 	//Set initial state for entire GAME
 	public void startNewGame() {
-				userMoneyRemaining = 100;
-				userCardValueTotal = 0;	
+		userMoneyRemaining = 100;
+		userCardValueTotal = 0;	
 	}
 	
 	public void placeBet(int betAmount) {
