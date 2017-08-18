@@ -10,6 +10,8 @@ public class Player {
 	
 	//Empty constructor
 	
+	private int wallet;
+	
 	public Player() {
 		
 	}

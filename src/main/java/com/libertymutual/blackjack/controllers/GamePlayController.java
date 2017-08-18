@@ -78,9 +78,6 @@ public class GamePlayController {
 		
 		model.addAttribute("userHand", userHand);
 		
-		
-		
-		
 		return "gameplay/game"; // take user to game page and display bet	
 		
 	//deal a hand
