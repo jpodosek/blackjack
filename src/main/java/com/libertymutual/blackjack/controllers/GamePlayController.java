@@ -122,6 +122,7 @@ public class GamePlayController {
 
 	@PostMapping("hit")
 	public String hitMe(Model model) {
+		int userHandScore;
 		// deal a card to user
 		// if userHandTotal > 21 -- BUST
 	// remaining money = remaining money - bet
@@ -131,7 +132,7 @@ public class GamePlayController {
 		// if
 		userHand.addCard(deck.drawCard()); 
 
-		
+		userHand.getHandScore();
 		
 		
 		
