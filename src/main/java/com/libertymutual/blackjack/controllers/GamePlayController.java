@@ -131,9 +131,15 @@ public class GamePlayController {
 
 		// if
 		userHand.addCard(deck.drawCard()); 
-
-		userHand.getHandScore();
 		
+
+		userHandScore = userHand.getHandScore();
+		//Bust
+		 if (userHandScore > 21) {
+			 
+		 } else if (userHandScore == 21) {
+			 return "gameplay/game";
+		 }
 		
 		
 		
