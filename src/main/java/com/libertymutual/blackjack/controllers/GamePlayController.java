@@ -68,6 +68,8 @@ public class GamePlayController {
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
 		//get get amount and display
 		this.betAmount = betAmount; 
+		wallet = 100;
+		model.addAttribute("wallet", wallet); // add to model, display on game.html
 		model.addAttribute("betAmount", betAmount); // add to model, display on game.html
 		
 		//Create new shuffled Deck;	
@@ -88,16 +90,15 @@ public class GamePlayController {
 		userHand.addCard(deck.drawCard());
 		
 		
-		
 		//add userHand to model
 		model.addAttribute("userHand", userHand);
 		
 		// if userHand= 21
 		
-
 		if (userHand.getHandScore() == 21) {
 			
 			//payout
+			
 		
 			//end round
 			//take user to pregame page (for a new round)
@@ -157,6 +158,7 @@ public class GamePlayController {
 		
 		
 		model.addAttribute("betAmount", betAmount);
+		model.addAttribute("wallet", wallet); 
 		model.addAttribute("userHand", userHand);
 		model.addAttribute("dealerHand", dealerHand);
 		return "gameplay/game"; // take user to game page and display bet
@@ -165,6 +167,7 @@ public class GamePlayController {
 	@PostMapping("stay")
 	public String Stay(Model model) {
 		model.addAttribute("betAmount", betAmount);
+		model.addAttribute("wallet", wallet); 
 		model.addAttribute("userHand", userHand);
 		model.addAttribute("dealerHand", dealerHand);
 		return "gameplay/game"; // take user to game page and display bet
