@@ -22,6 +22,7 @@ import com.libertymutual.blackjack.models.Player;
 public class GamePlayController {
 	
 	private int betAmount;
+	private int wallet;
 	private Player user;
 	private Player dealer;
 	Deck deck; 
@@ -90,6 +91,17 @@ public class GamePlayController {
 		
 		//add userHand to model
 		model.addAttribute("userHand", userHand);
+		
+		// if userHand= 21
+		
+
+		if (userHand.getHandScore() == 21) {
+			
+			//payout
+		
+			//end round
+			//take user to pregame page (for a new round)
+		}
 		
 		//
 		

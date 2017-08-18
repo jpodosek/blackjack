@@ -2,6 +2,7 @@ package com.libertymutual.blackjack.models;
 
 public class Player {
 	Hand currentHand;
+	private int wallet;
 	//hand
 	//int score of hand
 	//money
@@ -10,7 +11,7 @@ public class Player {
 	
 	//Empty constructor
 	
-	private int wallet;
+	
 	
 	public Player() {
 		
