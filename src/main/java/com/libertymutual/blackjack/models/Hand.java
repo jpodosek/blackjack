@@ -6,13 +6,17 @@ public class Hand {
 	
 	ArrayList<Card> hand;
 	
-	public void handle() {
+	public Hand() {
 		hand = new ArrayList<Card>();
 	}
 	
 	public void addCard(Card card) {
 		hand.add(card);
 		
+	}
+	
+	public ArrayList<Card> getCards(){
+		return hand;
 	}
 	//in game, create who instances of Hand object - one for player, one for dealer
 	//handTotalScore

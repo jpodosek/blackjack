@@ -1,5 +1,7 @@
 package com.libertymutual.blackjack.controllers;
 
+import java.util.ArrayList;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,14 +12,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.libertymutual.blackjack.models.Card;
+import com.libertymutual.blackjack.models.Deck;
+import com.libertymutual.blackjack.models.Hand;
+import com.libertymutual.blackjack.models.Player;
 
 @Controller // this is a controller that responds to http requests
 @RequestMapping({ "/", "/gameplay" }) // all of the URL paths that this controller will handle will start with either
 										// of these (added in start)
 public class GamePlayController {
 	
+	private int betAmount;
+	private Player user;
+	private Player dealer;
+	
+	
 	public GamePlayController() {	
-		 // How many cards have been created so far.
+		//create two players
+		user = new Player();
+		dealer = new Player();
 	}
 
 	@GetMapping("") // in the URL; only about INCOMING URL request entered from browser
@@ -51,12 +63,30 @@ public class GamePlayController {
 	// The bet amount on pregame posts to game; this post below picks up that value
 	// and adds to model to render
 	@PostMapping("bet")
-	public String getBetAmountToDisplay(@RequestParam(name = "betAmount") int betAmount, Model model) {
-		// add logic here to set bet amount (setter?_ to current round bet amount using
-		// whichever class keeps track of it
+	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
+		this.betAmount = betAmount; //set bet amount;
 		model.addAttribute("betAmount", betAmount); // add to model, display on game.html
-		return "gameplay/game"; // take user to game page and display bet
+		
+		Deck deck = new Deck(); //Create new shuffled Deck;		
+		Hand userHand = new Hand();	 //create new hand
+		Card userCard1 = deck.drawCard(); 
+		Card userCard2 = deck.drawCard();
+		
+		userHand.addCard(userCard1); //add card to hand
+		userHand.addCard(userCard2);//add card to hand
+		user.setHand(userHand); //assign hand to player object
+		
+		model.addAttribute("userHand", userHand);
+		
+		
+		
+		
+		return "gameplay/game"; // take user to game page and display bet	
+		
+	//deal a hand
 	}
+	
+	
 
 //	@PostMapping("hit")
 //	public String hitMe() {

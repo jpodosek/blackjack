@@ -35,7 +35,11 @@ body {
 	<br>
 	<hr>
 	<div class="playername">You</div>
-	<div class="cardimage"><img src="src/main/resources/static/PlayingCardImages/10_of_clubs.png" alt="" height="100" width="100"/></div>
+	<div>{{#userHand.cards}}
+	<div>{{rank}} of {{suit}}</div>
+	{{/userHand.cards}}
+	
+</div>
 	<br>
 	<br>
 	<br>
