@@ -1,6 +1,7 @@
 package com.libertymutual.blackjack.models;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Deck {
 	private ArrayList<Card> deck;
@@ -23,6 +24,24 @@ public class Deck {
 		System.out.println(deck);
 		
 		//printThis();
+		shuffle();
+	}
+	
+//	ArrayList<Card> deckToShuffle = new ArrayList<Card>();
+//	need random number, set variable equal to size of deck, for loop and within loop use random variable 
+//	random.nextInt(variable.size() - 1) + 1)
+//	add the generated random number to deckToShuffle
+	public void shuffle() {
+		Random random = new Random();
+		for (int i = deck.size() - 1; i >= 0; i--) {
+		    int j = random.nextInt(i + 1);
+
+		    /* swap cards i,j */
+		    Card card = deck.get(i);
+		    deck.set(i, deck.get(j));
+		    deck.set(j, card);
+		}
+//		System.out.print(deck);
 	}
 	
 //	public Card drawCard() {
