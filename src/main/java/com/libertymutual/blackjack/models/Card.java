@@ -1,11 +1,16 @@
 package com.libertymutual.blackjack.models;
 
+import java.util.ArrayList;
+
 public class Card {
 	
 	private String rank;
 	private String suit; 
 	private int cardRank;
 	
+	Hand userHand = new Hand();
+	Hand dealerHand = new Hand();
+
 	 public Card(String rank, String suit) {
        
 	     this.rank = rank;
@@ -29,35 +34,31 @@ public class Card {
  	} 
  
 	public int getCardValue() {
-
 		if (getRank().equals("ACE")) {
 			cardRank = 11;
 		} else if (getRank().equals("JACK") || getRank().equals("QUEEN") || getRank().equals("KING")) {
 			cardRank = 10;
-		} else if (getRank().equals("2")) {
-			cardRank = 2;
-		} else if (getRank().equals("3")) {
-			cardRank = 3;
-		} else if (getRank().equals("4")) {
-			cardRank = 4;
-		} else if (getRank().equals("5")) {
-			cardRank = 5;
-		} else if (getRank().equals("6")) {
-			cardRank = 6;
-		} else if (getRank().equals("7")) {
-			cardRank = 7;
-		} else if (getRank().equals("8")) {
-			cardRank = 8;
-		} else if (getRank().equals("9")) {
-			cardRank = 9;
-		} else if (getRank().equals("10")) {
-			cardRank = 10;
-		}
+		} else {
+			cardRank = Integer.parseInt(getRank());
+		} 
 		return cardRank;
 	}
 	
-	public int setCardValue() {
-		return cardRank = 1;
+	public int aceCheck() {
+		if(userHand.getHandScore() > 21 || dealerHand.getHandScore() > 21) {
+			//will eliminate the above if statement b/c we will invoke this method if user/dealer are over 21 in controller
+			//check to see if hand has an ace, if yes then equals 1, else bust
+			ArrayList<Card> cardsInHand = userHand.getCards();
+			int handLength = cardsInHand.size();
+			for(int i = 0; i < handLength; i+= 1) {
+				//traverse the hand, extract the card values and check to see if there's an ace
+				Card card = cardsInHand.remove(i);
+				if(card.cardRank == 11) {
+					cardRank = 1;
+					return cardRank;
+				}
+			}
+		} return cardRank;
 	}
-
-}
+	
+} 
