@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.libertymutual.blackjack.models.Card;
 import com.libertymutual.blackjack.models.Deck;
+import com.libertymutual.blackjack.models.GamePlay;
 import com.libertymutual.blackjack.models.Hand;
 import com.libertymutual.blackjack.models.Player;
 
@@ -20,18 +21,18 @@ import com.libertymutual.blackjack.models.Player;
 @RequestMapping({ "/", "/gameplay" }) // all of the URL paths that this controller will handle will start with either
 										// of these (added in start)
 public class GamePlayController {
-	
-	private int betAmount;
-	private int wallet;
+
+	private double betAmount;
+	private double wallet = 100;
 	private Player user;
 	private Player dealer;
-	Deck deck; 
+	Deck deck;
 	Hand userHand;
 	Hand dealerHand;
-	
-	
-	public GamePlayController() {	
-		//create two players
+	GamePlay round;
+
+	public GamePlayController() {
+		// create two players
 		user = new Player();
 		dealer = new Player();
 	}
@@ -54,123 +55,129 @@ public class GamePlayController {
 		return "gameplay/game";
 	}
 
-	@GetMapping("rules") //
+	@GetMapping("rules")
 	public String showGameRulesPage() {
 		System.out.println("Showing the home page.");
 		return "gameplay/rules";
 	}
 
-	
+	// while(wallet > 0) {
+	//
+	// }
+
 	// The bet amount on pregame posts to game; this post below picks up that value
 	// and adds to model to render
-	//Kicking off the Game
+	// Kicking off the Game
 	@PostMapping("bet")
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
-		//get get amount and display
-		this.betAmount = betAmount; 
+		// get get amount and display
+		this.betAmount = betAmount;
 		wallet = 100;
+		// wallet -= betAmount;
 		model.addAttribute("wallet", wallet); // add to model, display on game.html
 		model.addAttribute("betAmount", betAmount); // add to model, display on game.html
-		
-		//Create new shuffled Deck;	
-		deck = new Deck(); 
-		
-		//create new user hand
+
+		// Create new shuffled Deck;
+		deck = new Deck();
+		deck.shuffle();
+		// create new user hand
 		userHand = new Hand();
-		
-//		//draw cards from deck
-//		Card userCard1 = deck.drawCard();  
-//		Card userCard2 = deck.drawCard();
 
-		//assign hand to player object
-		user.setHand(userHand); 
-				
-		//add cards to hand
-		userHand.addCard(deck.drawCard()); 
+		// assign hand to player object
+		user.setHand(userHand);
+
+		// add cards to hand
 		userHand.addCard(deck.drawCard());
-		
-		
-		//add userHand to model
-		model.addAttribute("userHand", userHand);
-		
-		// if userHand= 21
-		
-		if (userHand.getHandScore() == 21) {
-			
-			//payout
-			
-		
-			//end round
-			//take user to pregame page (for a new round)
-		}
-		
-		//
-		
-		//Create new shuffled Deck;	
-		
-		//create new dealer hand
-		dealerHand = new Hand();
-		
-//		//draw cards from deck
-//		Card dealerCard1 = deck.drawCard();  
-//		Card dealerCard2 = deck.drawCard();
-		
-		//add cards to hand
-		dealerHand.addCard(deck.drawCard()); 
-		dealerHand.addCard(deck.drawCard());
-		
-		//assign hand to player object
-		dealer.setHand(dealerHand); 
-		
-		//add userHand to model
-		model.addAttribute("dealerHand", dealerHand);
-		
+		userHand.addCard(deck.drawCard());
 
-		return "gameplay/game"; // take user to game page and display bet	
-		
-	//deal a hand
+		// add userHand to model
+		model.addAttribute("userHand", userHand);
+
+		if (userHand.getHandScore() == 21) {
+			if (dealerHand.getHandScore() == 21) {
+				wallet += betAmount;
+			} else {
+				wallet += betAmount * 1.5;
+			}
+			// payout
+			// end round
+			// take user to pregame page (for a new round)
+		}
+
+		// create new dealer hand
+		dealerHand = new Hand();
+
+		// //draw cards from deck
+		// Card dealerCard1 = deck.drawCard();
+		// Card dealerCard2 = deck.drawCard();
+
+		// add cards to hand
+		dealerHand.addCard(deck.drawCard());
+		dealerHand.addCard(deck.drawCard());
+
+		// assign hand to player object
+		dealer.setHand(dealerHand);
+
+		// add userHand to model
+		model.addAttribute("dealerHand", dealerHand);
+
+		return "gameplay/game"; // take user to game page and display bet
+
+		// deal a hand
 	}
-	
-	
 
 	@PostMapping("hit")
 	public String hitMe(Model model) {
 		int userHandScore;
 		// deal a card to user
 		// if userHandTotal > 21 -- BUST
-	// remaining money = remaining money - bet
+		// remaining money = remaining money - bet
 		// redirect back to "gameplay/pregame" page
 		// if userHand == 21, blackjack - dealer has chance to match
 
 		// if
-		userHand.addCard(deck.drawCard()); 
-		
+		userHand.addCard(deck.drawCard());
 
 		userHandScore = userHand.getHandScore();
-		//Bust
-		 if (userHandScore > 21) {
-			 
-		 } else if (userHandScore == 21) {
-			 return "gameplay/game";
-		 }
-		
-		
-		
-		
+		// Bust
+		if (userHand.getHandScore() > 21) {
+			wallet -= betAmount;
+		} else if (userHand.getHandScore() == 21) {
+			if (dealerHand.getHandScore() == 21) {
+				wallet += betAmount;
+			} else {
+				wallet += betAmount * 1.5;
+			}
+		}
+
 		model.addAttribute("betAmount", betAmount);
-		model.addAttribute("wallet", wallet); 
+		model.addAttribute("wallet", wallet);
 		model.addAttribute("userHand", userHand);
 		model.addAttribute("dealerHand", dealerHand);
 		return "gameplay/game"; // take user to game page and display bet
 	}
-	
+
 	@PostMapping("stay")
-	public String Stay(Model model) {
+	public String stay(Model model) {
+		if (true) {
+			while (dealerHand.getHandScore() < 17) {
+				dealerHand.addCard(deck.drawCard());
+			}
+		}
+		
+		if (dealerHand.getHandScore() < userHand.getHandScore()) {
+			wallet += betAmount;
+		} else if (dealerHand.getHandScore() > 21) {
+			wallet += betAmount;
+		} else {
+			wallet -= betAmount;
+		}
+
 		model.addAttribute("betAmount", betAmount);
-		model.addAttribute("wallet", wallet); 
+		model.addAttribute("wallet", wallet);
 		model.addAttribute("userHand", userHand);
 		model.addAttribute("dealerHand", dealerHand);
 		return "gameplay/game"; // take user to game page and display bet
 	}
-	
+
 }

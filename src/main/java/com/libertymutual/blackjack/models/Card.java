@@ -55,5 +55,9 @@ public class Card {
 		}
 		return cardRank;
 	}
+	
+	public int setCardValue() {
+		return cardRank = 1;
+	}
 
 }
