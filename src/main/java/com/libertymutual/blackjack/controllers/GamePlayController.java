@@ -23,22 +23,25 @@ import com.libertymutual.blackjack.models.Player;
 public class GamePlayController {
 
 	private double betAmount;
-	private double wallet = 100;
+	private double wallet;
 	private Player user;
 	private Player dealer;
 	Deck deck;
 	Hand userHand;
 	Hand dealerHand;
 	GamePlay round;
+	String roundOutcome;
 
 	public GamePlayController() {
 		// create two players
 		user = new Player();
 		dealer = new Player();
-		
-		// Create new shuffled Deck; //moved this to constructor - should only happen once
-				deck = new Deck();
-				deck.shuffle();
+		// Create new shuffled Deck; //moved this to constructor - should only happen
+		// once
+		deck = new Deck();
+		deck.shuffle();
+
+		wallet = 100;
 	}
 
 	@GetMapping("") // in the URL; only about INCOMING URL request entered from browser
@@ -49,6 +52,7 @@ public class GamePlayController {
 
 	@GetMapping("pregame")
 	public String showPreGamePlayPage() {
+		// maybe set betAmount=0 here
 		System.out.println("Showing the pregame page.");
 		return "gameplay/pregame";
 	}
@@ -65,6 +69,20 @@ public class GamePlayController {
 		return "gameplay/rules";
 	}
 
+	@PostMapping("endofround")
+	public String endofRound() {
+		// maybe betAmount=0 here
+		// display current wallet amouunt
+		return "gameplay/endofround";
+	}
+
+	// @PostMapping("endofround")
+	// public String endofRound() {
+	// //maybe betAmount=0 here
+	// //display current wallet amouunt
+	// return "gameplay/endofround";
+	// }
+
 	// while(wallet > 0) {
 	//
 	// }
@@ -74,18 +92,13 @@ public class GamePlayController {
 	// Kicking off the Game
 	@PostMapping("bet")
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
-		//Make sure deck is not empty, otherwise end game
-		if (deck.getCardsLeft() == 0) {
-			return "gameplay/index";
-		}
+
 		// get get amount and display
 		this.betAmount = betAmount;
-		wallet = 100;
-		// wallet -= betAmount;
+		// wallet = 100;
 		model.addAttribute("wallet", wallet); // add to model, display on game.html
 		model.addAttribute("betAmount", betAmount); // add to model, display on game.html
 
-		
 		// create new user hand
 		userHand = new Hand();
 
@@ -98,25 +111,6 @@ public class GamePlayController {
 
 		// add userHand to model
 		model.addAttribute("userHand", userHand);
-
-		if (userHand.getHandScore() == 21) {
-			if (dealerHand.getHandScore() == 21) {
-				//user keeps bet;
-				//reset betAmount to 0
-				betAmount = 0;
-				
-				//clear userHand and dealerHand hands
-
-		
-				return "gameplay/pregame"; // take user to game page and display bet
-				//wallet += betAmount;
-			} else {
-				wallet += betAmount * 1.5;
-			}
-			// payout
-			// end round
-			// take user to pregame page (for a new round)
-		}
 
 		// create new dealer hand
 		dealerHand = new Hand();
@@ -137,12 +131,84 @@ public class GamePlayController {
 
 		return "gameplay/game"; // take user to game page and display bet
 
-		// deal a hand
+	}
+
+	@PostMapping("stay")
+	public String stay(Model model) {
+
+		int dealerHandScore = 0;
+		int userHandScore = userHand.getHandScore();
+
+		while (dealerHand.getHandScore() < 17) {
+			// deck.getCardsLeft();
+			dealerHand.addCard(deck.drawCard());
+			dealerHandScore = dealerHand.getHandScore();
+		}
+
+		if (dealerHandScore > 21) {
+			// Dealer bust, user wins
+			wallet += betAmount;
+			roundOutcome = "You win!";
+
+		} else if (dealerHandScore == 21) {
+
+			if (userHandScore == 21) {
+				// Tie
+				// reset betAmount to zero
+				roundOutcome = "Tie. You can keep your bet";
+
+			} else {
+				// dealer has 21, user has less,
+				// dealer wins
+				wallet -= betAmount;
+				roundOutcome = "You lose!";
+			}
+
+		} else if (dealerHandScore < 21) {
+			// user has higher score than dealer
+			if (userHandScore > dealerHandScore) {
+				// user wins
+				wallet -= betAmount;
+				roundOutcome = "You lose!";
+			}
+			else {
+				// dealer wins
+				wallet -= betAmount;
+				roundOutcome = "You lose!";
+			}
+		}
+
+		//roundOutcome = "This should be an unreachable part of logic.";
+		System.out.println("This should be an unreachable part of logic.");
+
+		betAmount = 0; // reset bet amount to zero
+		model.addAttribute("wallet", wallet);
+		model.addAttribute("betAmount", betAmount);
+		model.addAttribute("userHand", userHand);
+		model.addAttribute("dealerHand", dealerHand);
+		model.addAttribute("roundOutcome", roundOutcome);
+		//System.out.println("This should be an unreachable part of logic.");
+		return "gameplay/outcome";
+
+		// if (dealerHand.getHandScore() < userHand.getHandScore()) {
+		// //user wins
+		// wallet += betAmount;
+		// } else if (dealerHand.getHandScore() > 21) {
+		// wallet += betAmount;
+		// } else {
+		// wallet -= betAmount;
+		// }
+
 	}
 
 	@PostMapping("hit")
 	public String hitMe(Model model) {
 		int userHandScore;
+
+		// if deck is empty, end game -- might need to wrap everything in while loop
+		// if (deck.getCardsLeft() == 0)
+		// return "gameplay/index";
+
 		// deal a card to user
 		// if userHandTotal > 21 -- BUST
 		// remaining money = remaining money - bet
@@ -150,6 +216,7 @@ public class GamePlayController {
 		// if userHand == 21, blackjack - dealer has chance to match
 
 		// if
+
 		userHand.addCard(deck.drawCard());
 
 		userHandScore = userHand.getHandScore();
@@ -162,29 +229,6 @@ public class GamePlayController {
 			} else {
 				wallet += betAmount * 1.5;
 			}
-		}
-
-		model.addAttribute("betAmount", betAmount);
-		model.addAttribute("wallet", wallet);
-		model.addAttribute("userHand", userHand);
-		model.addAttribute("dealerHand", dealerHand);
-		return "gameplay/game"; // take user to game page and display bet
-	}
-
-	@PostMapping("stay")
-	public String stay(Model model) {
-		if (true) {
-			while (dealerHand.getHandScore() < 17) {
-				dealerHand.addCard(deck.drawCard());
-			}
-		}
-		
-		if (dealerHand.getHandScore() < userHand.getHandScore()) {
-			wallet += betAmount;
-		} else if (dealerHand.getHandScore() > 21) {
-			wallet += betAmount;
-		} else {
-			wallet -= betAmount;
 		}
 
 		model.addAttribute("betAmount", betAmount);

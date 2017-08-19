@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blackjack Game</title>
+<style>
+h1 {
+	text-align: center;
+}
+
+div {
+	
+}
+
+body {
+	background: #f06d06;
+	font-size: 80%;
+	padding: 20px;
+}
+
+.container {
+	align-items: flex-start| flex-end| center| baseline| stretch;
+	background-color: green;
+}
+
+.nowrap {
+	-webkit-flex-wrap: nowrap;
+	flex-wrap: nowrap;
+}
+</style>
+</head>
+<body>
+	<h1>Play Some Blackjack</h1>
+	<h2> {{ roundOutcome }}</h2>
+	<main class="container nowrap">
+	<div class="playername">Dealer</div>
+	<div>{{#dealerHand.cards}}
+	<div>{{rank}} of {{suit}}</div>
+	{{/dealerHand.cards}}
+	</div>
+	<br>
+	<hr>
+	
+	<div class="playername">You</div>
+	<div>{{#userHand.cards}}
+	<div>{{rank}} of {{suit}}</div>
+	{{/userHand.cards}}
+	
+</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div class="buttons">
+		<form method="POST" action="/gameplay/endofround">
+			<button>Next Round</button>
+		</form>
+		
+	</div>
+	Wallet: ${{ wallet }}
+	</main>
+</body>
+</html>
