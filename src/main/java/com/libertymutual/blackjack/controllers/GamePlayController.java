@@ -88,6 +88,17 @@ public class GamePlayController {
 		
 		return "gameplay/outcome";
 	}
+	
+	@PostMapping("game")
+	public String gamePlayPage(Model model) {
+		System.out.println("Showing the game page.");
+		
+		model.addAttribute("wallet", wallet);
+		model.addAttribute("userHand", userHand);
+		model.addAttribute("dealerHand", dealerHand);
+		model.addAttribute("roundOutcome", roundOutcome);
+		return "gameplay/game";
+	}
 
 	// @PostMapping("endofround")
 	// public String endofRound() {
@@ -153,11 +164,11 @@ public class GamePlayController {
 		int dealerHandScore = 0;
 		int userHandScore = userHand.getHandScore();
 
-		while (dealerHand.getHandScore() < 17) {
-			// deck.getCardsLeft();
-			dealerHand.addCard(deck.drawCard());
-			dealerHandScore = dealerHand.getHandScore();
-		}
+			while (dealerHand.getHandScore() < 17) {
+				// deck.getCardsLeft();
+				dealerHand.addCard(deck.drawCard());
+				dealerHandScore = dealerHand.getHandScore();
+			}
 
 		if (dealerHandScore > 21) {
 			// Dealer bust, user wins
@@ -231,19 +242,8 @@ public class GamePlayController {
 			wallet -= betAmount;
 			roundOutcome = "You lose!";
 			return "gameplay/outcome";
-		} else if (userHandScore == 21) {
+		}
 
-			if (dealerHandScore == 21) {
-				roundOutcome = "Push. You keep your money.";
-				// wallet += betAmount;
-				 return "gameplay/outcome";
-			} else {
-				// dealer busted; we win
-				wallet += betAmount * 1.5;
-				roundOutcome = "You win!";
-				return "gameplay/outcome";
-			}
-		} 
 		
 		model.addAttribute("betAmount", betAmount);
 		model.addAttribute("wallet", wallet);
