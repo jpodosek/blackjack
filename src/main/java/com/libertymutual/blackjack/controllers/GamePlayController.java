@@ -76,7 +76,7 @@ public class GamePlayController {
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
 		//Make sure deck is not empty, otherwise end game
 		if (deck.getCardsLeft() == 0) {
-			return //
+			return "gameplay/index";
 		}
 		// get get amount and display
 		this.betAmount = betAmount;
