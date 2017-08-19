@@ -40,7 +40,7 @@ public class GamePlayController {
 		// once
 		deck = new Deck();
 		deck.shuffle();
-
+		roundOutcome = null;
 		wallet = 100;
 	}
 
@@ -75,6 +75,19 @@ public class GamePlayController {
 		// display current wallet amouunt
 		return "gameplay/endofround";
 	}
+	
+	@PostMapping("outcome")
+	public String outCome(Model model) {
+		
+		// maybe betAmount=0 here
+		// display current wallet amouunt
+		model.addAttribute("wallet", wallet);
+		model.addAttribute("userHand", userHand);
+		model.addAttribute("dealerHand", dealerHand);
+		model.addAttribute("roundOutcome", roundOutcome);
+		
+		return "gameplay/outcome";
+	}
 
 	// @PostMapping("endofround")
 	// public String endofRound() {
@@ -92,7 +105,7 @@ public class GamePlayController {
 	// Kicking off the Game
 	@PostMapping("bet")
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
-
+		roundOutcome = "";
 		// get get amount and display
 		this.betAmount = betAmount;
 		// wallet = 100;
@@ -127,6 +140,7 @@ public class GamePlayController {
 		dealer.setHand(dealerHand);
 
 		// add userHand to model
+		model.addAttribute("roundOutcome", roundOutcome);
 		model.addAttribute("dealerHand", dealerHand);
 
 		return "gameplay/game"; // take user to game page and display bet
@@ -155,7 +169,7 @@ public class GamePlayController {
 			if (userHandScore == 21) {
 				// Tie
 				// reset betAmount to zero
-				roundOutcome = "Tie. You can keep your bet";
+				roundOutcome = "Push. You keep your money.";
 
 			} else {
 				// dealer has 21, user has less,
@@ -170,15 +184,14 @@ public class GamePlayController {
 				// user wins
 				wallet -= betAmount;
 				roundOutcome = "You lose!";
-			}
-			else {
+			} else {
 				// dealer wins
 				wallet -= betAmount;
 				roundOutcome = "You lose!";
 			}
 		}
 
-		//roundOutcome = "This should be an unreachable part of logic.";
+		// roundOutcome = "This should be an unreachable part of logic.";
 		System.out.println("This should be an unreachable part of logic.");
 
 		betAmount = 0; // reset bet amount to zero
@@ -187,7 +200,7 @@ public class GamePlayController {
 		model.addAttribute("userHand", userHand);
 		model.addAttribute("dealerHand", dealerHand);
 		model.addAttribute("roundOutcome", roundOutcome);
-		//System.out.println("This should be an unreachable part of logic.");
+		// System.out.println("This should be an unreachable part of logic.");
 		return "gameplay/outcome";
 
 		// if (dealerHand.getHandScore() < userHand.getHandScore()) {
@@ -204,37 +217,39 @@ public class GamePlayController {
 	@PostMapping("hit")
 	public String hitMe(Model model) {
 		int userHandScore;
-
-		// if deck is empty, end game -- might need to wrap everything in while loop
-		// if (deck.getCardsLeft() == 0)
-		// return "gameplay/index";
-
-		// deal a card to user
-		// if userHandTotal > 21 -- BUST
-		// remaining money = remaining money - bet
-		// redirect back to "gameplay/pregame" page
-		// if userHand == 21, blackjack - dealer has chance to match
-
-		// if
-
+		int dealerHandScore = dealerHand.getHandScore();
+		roundOutcome = "";
+		//draw a card
 		userHand.addCard(deck.drawCard());
-
+		
 		userHandScore = userHand.getHandScore();
-		// Bust
-		if (userHand.getHandScore() > 21) {
-			wallet -= betAmount;
-		} else if (userHand.getHandScore() == 21) {
-			if (dealerHand.getHandScore() == 21) {
-				wallet += betAmount;
-			} else {
-				wallet += betAmount * 1.5;
-			}
-		}
 
+		// Bust
+		if (userHandScore > 21) {
+			// user busted
+			// account for ace method
+			wallet -= betAmount;
+			roundOutcome = "You lose!";
+			return "gameplay/outcome";
+		} else if (userHandScore == 21) {
+
+			if (dealerHandScore == 21) {
+				roundOutcome = "Push. You keep your money.";
+				// wallet += betAmount;
+				 return "gameplay/outcome";
+			} else {
+				// dealer busted; we win
+				wallet += betAmount * 1.5;
+				roundOutcome = "You win!";
+				return "gameplay/outcome";
+			}
+		} 
+		
 		model.addAttribute("betAmount", betAmount);
 		model.addAttribute("wallet", wallet);
 		model.addAttribute("userHand", userHand);
 		model.addAttribute("dealerHand", dealerHand);
+		model.addAttribute("roundOutcome", roundOutcome);
 		return "gameplay/game"; // take user to game page and display bet
 	}
 
