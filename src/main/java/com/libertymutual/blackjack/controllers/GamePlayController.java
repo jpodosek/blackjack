@@ -35,6 +35,10 @@ public class GamePlayController {
 		// create two players
 		user = new Player();
 		dealer = new Player();
+		
+		// Create new shuffled Deck; //moved this to constructor - should only happen once
+				deck = new Deck();
+				deck.shuffle();
 	}
 
 	@GetMapping("") // in the URL; only about INCOMING URL request entered from browser
@@ -70,6 +74,10 @@ public class GamePlayController {
 	// Kicking off the Game
 	@PostMapping("bet")
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
+		//Make sure deck is not empty, otherwise end game
+		if (deck.getCardsLeft() == 0) {
+			return //
+		}
 		// get get amount and display
 		this.betAmount = betAmount;
 		wallet = 100;
@@ -77,9 +85,7 @@ public class GamePlayController {
 		model.addAttribute("wallet", wallet); // add to model, display on game.html
 		model.addAttribute("betAmount", betAmount); // add to model, display on game.html
 
-		// Create new shuffled Deck;
-		deck = new Deck();
-		deck.shuffle();
+		
 		// create new user hand
 		userHand = new Hand();
 
@@ -95,7 +101,15 @@ public class GamePlayController {
 
 		if (userHand.getHandScore() == 21) {
 			if (dealerHand.getHandScore() == 21) {
-				wallet += betAmount;
+				//user keeps bet;
+				//reset betAmount to 0
+				betAmount = 0;
+				
+				//clear userHand and dealerHand hands
+
+		
+				return "gameplay/pregame"; // take user to game page and display bet
+				//wallet += betAmount;
 			} else {
 				wallet += betAmount * 1.5;
 			}

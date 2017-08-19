@@ -50,5 +50,11 @@ public class Deck {
 		cardsLeft--;
 		return drawnCard;
 	}
+	
+	//New method - added 936AM 8/19
+	public int getCardsLeft()
+	{
+		return cardsLeft;
+	}
 
 }
