@@ -32,23 +32,27 @@ public class Hand {
 		int handScore = 0;
 		for (Card c: hand) {
 			handScore += c.getCardValue();
+			//a way to handle the ace????
+			if(handScore > 21 && c.getCardValue() == 11) {
+				handScore -= 10;
+			}
 		}
 	return handScore;
 	}
 	
-	public int aceCheck() {
-			//check to see if hand has an ace, if yes then equals 1, else bust
-			ArrayList<Card> cardsInHand = userHand.getCards();
-			int handLength = cardsInHand.size();
-			for(int i = 0; i < handLength; i+= 1) {
-				//traverse the hand, extract the card values and check to see if there's an ace
-				card = cardsInHand.remove(i);
-				if(card.getCardRank() == 11) {
-					setCardRank(1);
-					return cardRank;
-				}
-			} return cardRank;
-	}
+//	public int aceCheck() {
+//			//check to see if hand has an ace, if yes then equals 1, else bust
+//			ArrayList<Card> cardsInHand = userHand.getCards();
+//			int handLength = cardsInHand.size();
+//			for(int i = 0; i < handLength; i+= 1) {
+//				//traverse the hand, extract the card values and check to see if there's an ace
+//				Card card = cardsInHand.remove(i);
+//				if(card.getCardRank() == 11) {
+//					setCardRank(1);
+//					return cardRank;
+//				}
+//			} return cardRank;
+//	}
 	//in game, create who instances of Hand object - one for player, one for dealer
 	//handTotalScore
 		//method add card;

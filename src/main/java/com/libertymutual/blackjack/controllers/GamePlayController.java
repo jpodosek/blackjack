@@ -230,6 +230,9 @@ public class GamePlayController {
 			// account for ace method
 			wallet -= betAmount;
 			roundOutcome = "You lose!";
+			model.addAttribute("betAmount", betAmount);
+			model.addAttribute("userHand", userHand);
+			model.addAttribute("dealerHand", dealerHand);
 			model.addAttribute("roundOutcome", roundOutcome);
 			model.addAttribute("wallet", wallet);
 			return "gameplay/outcome";
