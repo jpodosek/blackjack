@@ -191,7 +191,7 @@ public class GamePlayController {
 
 			if (dealerHandScore > 21) {
 				// Dealer bust, user wins
-				wallet += betAmount;
+				wallet += betAmount * 2;
 				roundOutcome = "You win!";
 
 			} else if (dealerHandScore == 21) {
@@ -209,7 +209,7 @@ public class GamePlayController {
 				// user has higher score than dealer
 				if (userHandScore > dealerHandScore) {
 					// user wins
-					wallet += betAmount;
+					wallet += betAmount * 2;
 					roundOutcome = "You win!";
 				} else if (userHandScore == dealerHandScore) {
 					roundOutcome = "Push. You keep your money";
