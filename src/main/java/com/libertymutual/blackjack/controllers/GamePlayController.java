@@ -162,7 +162,7 @@ public class GamePlayController {
 	@PostMapping("stay")
 	public String stay(Model model) {
 
-		int dealerHandScore = 0;
+		int dealerHandScore = dealerHand.getHandScore();
 		int userHandScore = userHand.getHandScore();
 
 		while (dealerHand.getHandScore() < 17) {
