@@ -40,7 +40,7 @@ main div {
 </style>
 </head>
 <body>
-	<h1>Play Some Blackjack</h1>
+	<h1>Place your bet</h1>
 	
 	<main>
 	<div>Dealer
@@ -50,7 +50,9 @@ main div {
 	<hr>
 	<div>You</div>
 	<br>
+	
 	<div>
+	Wallet: ${{ wallet }}
 	<form method="POST" action="bet">
 		$<input type="number" name="betAmount" type="number" max="100"
 			min="0" autofocus required>

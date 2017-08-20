@@ -38,10 +38,10 @@ public class GamePlayController {
 		dealer = new Player();
 		// Create new shuffled Deck; //moved this to constructor - should only happen
 		// once
-		deck = new Deck();
-		deck.shuffle();
+		// deck = new Deck();
+		// deck.shuffle();
 		roundOutcome = "";
-		wallet = 100;
+		// wallet = 100;
 	}
 
 	@GetMapping("") // in the URL; only about INCOMING URL request entered from browser
@@ -50,11 +50,17 @@ public class GamePlayController {
 		return "gameplay/index"; // path to a file (under the templates folder) to send back to browser
 	}
 
+	// this mapping resets the initial state of the game.
+	// setting these in the constructor won't allow replaying within the same
+	// application session
 	@GetMapping("pregame")
 	public String showPreGamePlayPage() {
-		// maybe set betAmount=0 here
-		System.out.println("Showing the pregame page.");
+		deck = new Deck();
+		deck.shuffle();
+		wallet = 100;
+		// setting wallet = 100 to allow clean slate for testing.
 		return "gameplay/pregame";
+
 	}
 
 	@GetMapping("game")
@@ -70,34 +76,43 @@ public class GamePlayController {
 	}
 
 	@PostMapping("endofround")
-	public String endofRound() {
-		// maybe betAmount=0 here
-		// display current wallet amouunt
-		return "gameplay/endofround";
+	public String endofRound(Model model) {
+
+		if ((deck.getCardsLeft() > 0) && wallet > 0) {
+			model.addAttribute("wallet", wallet);
+			// maybe betAmount=0 here
+			// display current wallet amouunt
+			return "gameplay/endofround";
+		} else
+			return "gameplay/ranout";
 	}
-	
+
 	@PostMapping("outcome")
 	public String outCome(Model model) {
-		
+
 		// maybe betAmount=0 here
 		// display current wallet amouunt
 		model.addAttribute("wallet", wallet);
 		model.addAttribute("userHand", userHand);
 		model.addAttribute("dealerHand", dealerHand);
 		model.addAttribute("roundOutcome", roundOutcome);
-		
+
 		return "gameplay/outcome";
 	}
-	
+
 	@PostMapping("game")
 	public String gamePlayPage(Model model) {
-		System.out.println("Showing the game page.");
+
+		// only allow page to display if deck and wallet are NOT empty
+		if ((deck.getCardsLeft() > 0) && wallet > 0) {
+			model.addAttribute("wallet", wallet);
+			model.addAttribute("userHand", userHand);
+			model.addAttribute("dealerHand", dealerHand);
+			model.addAttribute("roundOutcome", roundOutcome);
+			return "gameplay/game";
+
+		} else return "gameplay/ranout";
 		
-		model.addAttribute("wallet", wallet);
-		model.addAttribute("userHand", userHand);
-		model.addAttribute("dealerHand", dealerHand);
-		model.addAttribute("roundOutcome", roundOutcome);
-		return "gameplay/game";
 	}
 
 	// @PostMapping("endofround")
@@ -114,137 +129,146 @@ public class GamePlayController {
 	// The bet amount on pregame posts to game; this post below picks up that value
 	// and adds to model to render
 	// Kicking off the Game
-	
+
 	@PostMapping("bet")
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
-		roundOutcome = "";
-		// get get amount and display
-		this.betAmount = betAmount;
-		// wallet = 100;
-		model.addAttribute("wallet", wallet); // add to model, display on game.html
-		model.addAttribute("betAmount", betAmount); // add to model, display on game.html
 
-		// create new user hand
-		userHand = new Hand();
+		// only allow page to display if deck and wallet are NOT empty
+		while ((deck.getCardsLeft() > 0) && wallet > 0) {
 
-		// assign hand to player object
-		user.setHand(userHand);
+			roundOutcome = "";
+			// get get amount and display
+			this.betAmount = betAmount;
+			model.addAttribute("wallet", wallet); // add to model, display on game.html
+			model.addAttribute("betAmount", betAmount); // add to model, display on game.html
 
-		// add cards to hand
-		userHand.addCard(deck.drawCard());
-		userHand.addCard(deck.drawCard());
+			// create new user & dealer hand
+			userHand = new Hand();
+			dealerHand = new Hand();
 
-		// add userHand to model
-		model.addAttribute("userHand", userHand);
+			// assign hand to player objects
+			user.setHand(userHand);
+			dealer.setHand(dealerHand);
 
-		// create new dealer hand
-		dealerHand = new Hand();
+			userHand.addCard(deck.drawCard());
+			userHand.addCard(deck.drawCard());
+			dealerHand.addCard(deck.drawCard());
+			dealerHand.addCard(deck.drawCard());
+
+			// add userHand to model
+			model.addAttribute("userHand", userHand);
+			model.addAttribute("roundOutcome", roundOutcome);
+			model.addAttribute("dealerHand", dealerHand);
+
+			return "gameplay/game"; // take user to game page and display bet
+		}
+
+		// deck or wallet has runout. direct to ranout page and end game
+		user.setPlayerWallet(0);// reset wallet
+		return "gameplay/ranout";
 
 		// //draw cards from deck
 		// Card dealerCard1 = deck.drawCard();
 		// Card dealerCard2 = deck.drawCard();
-
-		// add cards to hand
-		dealerHand.addCard(deck.drawCard());
-		dealerHand.addCard(deck.drawCard());
-
-		// assign hand to player object
-		dealer.setHand(dealerHand);
-
-		// add userHand to model
-		model.addAttribute("roundOutcome", roundOutcome);
-		model.addAttribute("dealerHand", dealerHand);
-
-		return "gameplay/game"; // take user to game page and display bet
-
 	}
 
 	@PostMapping("stay")
 	public String stay(Model model) {
+		while ((deck.getCardsLeft() > 0) && wallet > 0) {
 
-		int dealerHandScore = dealerHand.getHandScore();
-		int userHandScore = userHand.getHandScore();
+			int dealerHandScore = dealerHand.getHandScore();
+			int userHandScore = userHand.getHandScore();
 
-		while (dealerHand.getHandScore() < 17) {
-			// deck.getCardsLeft();
-			dealerHand.addCard(deck.drawCard());
-			dealerHandScore = dealerHand.getHandScore();
-		}
-
-		if (dealerHandScore > 21) {
-			// Dealer bust, user wins
-			wallet += betAmount;
-			roundOutcome = "You win!";
-
-		} else if (dealerHandScore == 21) {
-			if (userHandScore == 21) {
-				// Tie, reset betAmount to zero
-				roundOutcome = "Push. You keep your money.";
-			} else {
-				// user has less,
-				// dealer wins
-				wallet -= betAmount;
-				roundOutcome = "You lose!";
+			while (dealerHand.getHandScore() < 17) {
+				// deck.getCardsLeft();
+				dealerHand.addCard(deck.drawCard());
+				dealerHandScore = dealerHand.getHandScore();
 			}
-		} else if (dealerHandScore < 21) {
-			// user has higher score than dealer
-			if (userHandScore > dealerHandScore) {
-				// user wins
+
+			if (dealerHandScore > 21) {
+				// Dealer bust, user wins
 				wallet += betAmount;
 				roundOutcome = "You win!";
-			} else if(userHandScore == dealerHandScore) {
-				roundOutcome = "Push. You keep your money";
-			} else {
-				// dealer wins
-				wallet -= betAmount;
-				roundOutcome = "You lose!";
+
+			} else if (dealerHandScore == 21) {
+				if (userHandScore == 21) {
+					// Tie, reset betAmount to zero
+					roundOutcome = "Push. You keep your money.";
+				} else {
+					// user has less,
+					// dealer wins
+					wallet -= betAmount;
+					roundOutcome = "You lose!";
+				}
+
+			} else if (dealerHandScore < 21) {
+				// user has higher score than dealer
+				if (userHandScore > dealerHandScore) {
+					// user wins
+					wallet += betAmount;
+					roundOutcome = "You win!";
+				} else if (userHandScore == dealerHandScore) {
+					roundOutcome = "Push. You keep your money";
+				} else {
+					// dealer wins
+					wallet -= betAmount;
+					roundOutcome = "You lose!";
+				}
 			}
+
+			// roundOutcome = "This should be an unreachable part of logic.";
+			System.out.println("This should be an unreachable part of logic.");
+
+			betAmount = 0; // reset bet amount to zero
+			model.addAttribute("wallet", wallet);
+			model.addAttribute("betAmount", betAmount);
+			model.addAttribute("userHand", userHand);
+			model.addAttribute("dealerHand", dealerHand);
+			model.addAttribute("roundOutcome", roundOutcome);
+			// System.out.println("This should be an unreachable part of logic.");
+			return "gameplay/outcome";
 		}
 
-		// roundOutcome = "This should be an unreachable part of logic.";
-		System.out.println("This should be an unreachable part of logic.");
-
-		betAmount = 0; // reset bet amount to zero
-		model.addAttribute("wallet", wallet);
-		model.addAttribute("betAmount", betAmount);
-		model.addAttribute("userHand", userHand);
-		model.addAttribute("dealerHand", dealerHand);
-		model.addAttribute("roundOutcome", roundOutcome);
-		// System.out.println("This should be an unreachable part of logic.");
-		return "gameplay/outcome";
-
+		// deck or wallet has runout. direct to ranout page and end game
+		user.setPlayerWallet(0);// reset wallet
+		return "gameplay/ranout";
 	}
 
 	@PostMapping("hit")
 	public String hitMe(Model model) {
 		int userHandScore;
-		int dealerHandScore = dealerHand.getHandScore();
-		//draw a card
-		userHand.addCard(deck.drawCard());
-		
-		userHandScore = userHand.getHandScore();
 
-		// Bust
-		if (userHandScore > 21) {
-			// user busted
-			// account for ace method
-			wallet -= betAmount;
-			roundOutcome = "You lose!";
+		// only allow page to display if deck and wallet are NOT empty
+		while ((deck.getCardsLeft() > 0) && wallet > 0) {
+			// draw a card
+			userHand.addCard(deck.drawCard());
+			userHandScore = userHand.getHandScore();
+
+			// Bust
+			if (userHandScore > 21) {
+				// user busted
+				// direct to outcome page and display round results
+				// account for ace method
+				wallet -= betAmount;
+				roundOutcome = "You lose!";
+				model.addAttribute("betAmount", betAmount);
+				model.addAttribute("userHand", userHand);
+				model.addAttribute("dealerHand", dealerHand);
+				model.addAttribute("roundOutcome", roundOutcome);
+				model.addAttribute("wallet", wallet);
+				return "gameplay/outcome";
+			}
+
+			// user has not busted. display gameplay page again with options to hit or stay
 			model.addAttribute("betAmount", betAmount);
+			model.addAttribute("wallet", wallet);
 			model.addAttribute("userHand", userHand);
 			model.addAttribute("dealerHand", dealerHand);
 			model.addAttribute("roundOutcome", roundOutcome);
-			model.addAttribute("wallet", wallet);
-			return "gameplay/outcome";
+			return "gameplay/game"; // take user to game page and display bet
 		}
-		
-		
-		model.addAttribute("betAmount", betAmount);
-		model.addAttribute("wallet", wallet);
-		model.addAttribute("userHand", userHand);
-		model.addAttribute("dealerHand", dealerHand);
-		model.addAttribute("roundOutcome", roundOutcome);
-		return "gameplay/game"; // take user to game page and display bet
+		// deck or wallet has runout. direct to ranout page and end game
+		user.setPlayerWallet(0);// reset wallet
+		return "gameplay/ranout";
 	}
-
 }
