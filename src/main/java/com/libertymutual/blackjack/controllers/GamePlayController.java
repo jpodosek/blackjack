@@ -40,7 +40,7 @@ public class GamePlayController {
 		// once
 		deck = new Deck();
 		deck.shuffle();
-		roundOutcome = null;
+		roundOutcome = "";
 		wallet = 100;
 	}
 
@@ -114,6 +114,7 @@ public class GamePlayController {
 	// The bet amount on pregame posts to game; this post below picks up that value
 	// and adds to model to render
 	// Kicking off the Game
+	
 	@PostMapping("bet")
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
 		roundOutcome = "";
@@ -164,11 +165,11 @@ public class GamePlayController {
 		int dealerHandScore = 0;
 		int userHandScore = userHand.getHandScore();
 
-			while (dealerHand.getHandScore() < 17) {
-				// deck.getCardsLeft();
-				dealerHand.addCard(deck.drawCard());
-				dealerHandScore = dealerHand.getHandScore();
-			}
+		while (dealerHand.getHandScore() < 17) {
+			// deck.getCardsLeft();
+			dealerHand.addCard(deck.drawCard());
+			dealerHandScore = dealerHand.getHandScore();
+		}
 
 		if (dealerHandScore > 21) {
 			// Dealer bust, user wins
@@ -176,25 +177,23 @@ public class GamePlayController {
 			roundOutcome = "You win!";
 
 		} else if (dealerHandScore == 21) {
-
 			if (userHandScore == 21) {
-				// Tie
-				// reset betAmount to zero
+				// Tie, reset betAmount to zero
 				roundOutcome = "Push. You keep your money.";
-
 			} else {
-				// dealer has 21, user has less,
+				// user has less,
 				// dealer wins
 				wallet -= betAmount;
 				roundOutcome = "You lose!";
 			}
-
 		} else if (dealerHandScore < 21) {
 			// user has higher score than dealer
 			if (userHandScore > dealerHandScore) {
 				// user wins
-				wallet -= betAmount;
-				roundOutcome = "You lose!";
+				wallet += betAmount;
+				roundOutcome = "You win!";
+			} else if(userHandScore == dealerHandScore) {
+				roundOutcome = "Push. You keep your money";
 			} else {
 				// dealer wins
 				wallet -= betAmount;
@@ -214,22 +213,12 @@ public class GamePlayController {
 		// System.out.println("This should be an unreachable part of logic.");
 		return "gameplay/outcome";
 
-		// if (dealerHand.getHandScore() < userHand.getHandScore()) {
-		// //user wins
-		// wallet += betAmount;
-		// } else if (dealerHand.getHandScore() > 21) {
-		// wallet += betAmount;
-		// } else {
-		// wallet -= betAmount;
-		// }
-
 	}
 
 	@PostMapping("hit")
 	public String hitMe(Model model) {
 		int userHandScore;
 		int dealerHandScore = dealerHand.getHandScore();
-		roundOutcome = "";
 		//draw a card
 		userHand.addCard(deck.drawCard());
 		
@@ -241,6 +230,8 @@ public class GamePlayController {
 			// account for ace method
 			wallet -= betAmount;
 			roundOutcome = "You lose!";
+			model.addAttribute("roundOutcome", roundOutcome);
+			model.addAttribute("wallet", wallet);
 			return "gameplay/outcome";
 		}
 
