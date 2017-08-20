@@ -34,26 +34,20 @@ public class Hand {
 			handScore += c.getCardValue();
 			//a way to handle the ace????
 //			if(handScore > 21) {
-//				for(Card card : hand) {
-//					if(card.getCardValue() == 11) {
-//						card.setCardRank(handScore - 10);
-//					}
-//				}
+//				aceCheck();
 //			}
-		}
-	return handScore;
+		} return handScore;
 	}
 	
 	
-//	public int aceCheck() {
-//		if(getHandScore() > 21) {
-//			for(Card card : hand) {
-//				if(card.getCardValue() == 11) {
-//					card.setCardRank(getHandScore() - 10);
-//				}
-//			}
-//		} return getHandScore();
-//	}
+	public int aceCheck() {
+		for(Card card : hand) {
+			if(card.getCardValue() == 11) {
+				card.setCardRank(getHandScore() - 10);
+			}
+		} 
+		return getHandScore();
+	}
 //	public int aceCheck() {
 //			//check to see if hand has an ace, if yes then equals 1, else bust
 //			ArrayList<Card> cardsInHand = userHand.getCards();
