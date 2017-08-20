@@ -234,7 +234,7 @@ public class GamePlayController {
 			model.addAttribute("wallet", wallet);
 			return "gameplay/outcome";
 		}
-
+		
 		
 		model.addAttribute("betAmount", betAmount);
 		model.addAttribute("wallet", wallet);
