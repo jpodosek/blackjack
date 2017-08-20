@@ -35,13 +35,13 @@ public class Card {
  
 	public int getCardValue() {
 		if (getRank().equals("ACE")) {
-			cardRank = 11;
+			setCardRank(11);
 		} else if (getRank().equals("JACK") || getRank().equals("QUEEN") || getRank().equals("KING")) {
-			cardRank = 10;
+			setCardRank(10);
 		} else {
-			cardRank = Integer.parseInt(getRank());
+			setCardRank(Integer.parseInt(getRank()));
 		} 
-		return cardRank;
+		return getCardRank();
 	}
 	
 	public int aceCheck() {
@@ -59,6 +59,16 @@ public class Card {
 				}
 			}
 		} return cardRank;
+	}
+
+
+	public int getCardRank() {
+		return cardRank;
+	}
+
+
+	public void setCardRank(int cardRank) {
+		this.cardRank = cardRank;
 	}
 	
 } 
