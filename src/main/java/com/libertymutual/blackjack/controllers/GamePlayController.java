@@ -164,6 +164,10 @@ public class GamePlayController {
 		}
 
 		// deck or wallet has runout. direct to ranout page and end game
+		// add userHand to model
+		model.addAttribute("userHand", userHand);
+		model.addAttribute("roundOutcome", roundOutcome);
+		model.addAttribute("dealerHand", dealerHand);
 		user.setPlayerWallet(0);// reset wallet
 		return "gameplay/ranout";
 
@@ -260,6 +264,8 @@ public class GamePlayController {
 			}
 
 			// user has not busted. display gameplay page again with options to hit or stay
+			//Getting an error: NullContext for variable Rank Error (line 37)/ 
+			//tried duplicating this outside while loop, still doesn't fix
 			model.addAttribute("betAmount", betAmount);
 			model.addAttribute("wallet", wallet);
 			model.addAttribute("userHand", userHand);
