@@ -134,7 +134,7 @@ public class GamePlayController {
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
 
 		// only allow page to display if deck and wallet are NOT empty
-		while ((deck.getCardsLeft() > 0) && wallet > 0) {
+		if ((deck.getCardsLeft() > 0) && wallet > 0) {
 
 			roundOutcome = "";
 			// get get amount and display
@@ -178,7 +178,7 @@ public class GamePlayController {
 
 	@PostMapping("stay")
 	public String stay(Model model) {
-		while ((deck.getCardsLeft() > 0) && wallet > 0) {
+		if((deck.getCardsLeft() > 0) && wallet > 0) {
 
 			int dealerHandScore = dealerHand.getHandScore();
 			int userHandScore = userHand.getHandScore();
@@ -243,7 +243,7 @@ public class GamePlayController {
 		int userHandScore;
 
 		// only allow page to display if deck and wallet are NOT empty
-		while ((deck.getCardsLeft() > 0) && wallet > 0) {
+		if ((deck.getCardsLeft() > 0) && wallet > 0) {
 			// draw a card
 			userHand.addCard(deck.drawCard());
 			userHandScore = userHand.getHandScore();
