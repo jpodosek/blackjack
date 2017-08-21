@@ -36,15 +36,15 @@ public class Hand {
 			if(c.getCardValue() == 11) {
 				aceCount++;
 			}
-			if(handScore > 21 && aceCount > 0) {
-				for(int i = 1; i <= aceCount; i++) {
-					if(handScore > 21) {
-						handScore -= 10;
-						aceCount--;
-					}
+		}
+		if(handScore > 21 && aceCount > 0) {
+			for(int i = 1; i <= aceCount; i++) {
+				if(handScore > 21) {
+					handScore -= 10;
 				}
 			}
-		} return handScore;
+		}
+		return handScore;
 	}
 
 	public void addCard(String string) {
