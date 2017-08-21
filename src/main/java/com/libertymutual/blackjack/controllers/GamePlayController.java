@@ -186,7 +186,13 @@ public class GamePlayController {
 				dealerHandScore = dealerHand.getHandScore();
 			}
 
-			if (dealerHandScore > 21) {
+			
+			if (dealerHandScore < 21 && userHandScore == 21) {
+				//user wins
+				wallet += betAmount * 1.5;
+				roundOutcome = "You win!";
+					
+			} else if (dealerHandScore > 21) {
 				// Dealer bust, user wins
 				wallet += betAmount * 2;
 				roundOutcome = "You win!";
