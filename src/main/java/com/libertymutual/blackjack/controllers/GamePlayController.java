@@ -152,7 +152,6 @@ public class GamePlayController {
 			userHand.addCard(deck.drawCard());
 			dealerHand.addCard(deck.drawCard());
 			
-			
 			model.addAttribute("userHand", userHand);
 			model.addAttribute("dealerHand", dealerHand);
 			model.addAttribute("roundOutcome", roundOutcome);

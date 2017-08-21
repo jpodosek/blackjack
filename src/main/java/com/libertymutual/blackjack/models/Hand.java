@@ -46,4 +46,8 @@ public class Hand {
 			}
 		} return handScore;
 	}
+
+	public void addCard(String string) {
+		string = "?";
+	}
 }

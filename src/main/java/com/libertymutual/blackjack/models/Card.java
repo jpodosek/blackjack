@@ -43,24 +43,6 @@ public class Card {
 		} 
 		return getCardRank();
 	}
-	
-//	public int aceCheck() {
-//		if(userHand.getHandScore() > 21 || dealerHand.getHandScore() > 21) {
-//			//will eliminate the above if statement b/c we will invoke this method if user/dealer are over 21 in controller
-//			//check to see if hand has an ace, if yes then equals 1, else bust
-//			ArrayList<Card> cardsInHand = userHand.getCards();
-//			int handLength = cardsInHand.size();
-//			for(int i = 0; i < handLength; i+= 1) {
-//				//traverse the hand, extract the card values and check to see if there's an ace
-//				Card card = cardsInHand.remove(i);
-//				if(card.cardRank == 11) {
-//					cardRank = 1;
-//					return cardRank;
-//				}
-//			}
-//		} return cardRank;
-//	}
-
 
 	public int getCardRank() {
 		return cardRank;
