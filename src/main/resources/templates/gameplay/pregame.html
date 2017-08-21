@@ -50,6 +50,7 @@ main div {
 	<div>You</div>
 	<br>
 	<div>
+	Current Wallet: ${{ wallet }}
 	<form method="POST" action="gameplay/bet">
 		$<input type="number" name="betAmount" type="number" max="{{ wallet }}"
 			min="0" autofocus required>
