@@ -25,6 +25,8 @@ public class Hand {
 	public ArrayList<Card> getCards() {
 		return hand;
 	}
+	
+	
 
 	public int getHandScore() {
 		handScore = 0;

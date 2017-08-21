@@ -31,7 +31,7 @@ public class GamePlayController {
 	Hand dealerHand;
 	GamePlay round;
 	String roundOutcome;
-
+	
 	public GamePlayController() {
 		// create two players
 		user = new Player();
@@ -146,16 +146,17 @@ public class GamePlayController {
 			user.setHand(userHand);
 			dealer.setHand(dealerHand);
 
+			//deal cards
 			userHand.addCard(deck.drawCard());
 			dealerHand.addCard(deck.drawCard());
 			userHand.addCard(deck.drawCard());
 			dealerHand.addCard(deck.drawCard());
-
-			// add userHand to model
+			
+			
 			model.addAttribute("userHand", userHand);
-			model.addAttribute("roundOutcome", roundOutcome);
 			model.addAttribute("dealerHand", dealerHand);
-
+			model.addAttribute("roundOutcome", roundOutcome);
+	
 			return "gameplay/game"; // take user to game page and display bet
 		}
 
@@ -215,9 +216,6 @@ public class GamePlayController {
 					roundOutcome = "You lose!";
 				}
 			}
-
-			// roundOutcome = "This should be an unreachable part of logic.";
-			System.out.println("This should be an unreachable part of logic.");
 
 			betAmount = 0; // reset bet amount to zero
 			model.addAttribute("wallet", wallet);
