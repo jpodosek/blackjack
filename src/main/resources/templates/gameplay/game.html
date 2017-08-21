@@ -30,14 +30,12 @@ body {
 </head>
 <body>
 	<h1>Play Some Blackjack</h1>
-	<div>{{ roundOutcome }}</div>
-	<main class="container nowrap">
-	<div class="playername">Dealer</div>
-	<div>{{#dealerHand.cards}}
-	<div>{{rank}} of {{suit}}</div>
-	{{/dealerHand.cards}}
-	</div>
-	<br>
+    <div>{{ roundOutcome }}</div>
+    <main class="container nowrap">
+    <div class="playername">Dealer</div>
+    <div>{{ dealerHand.cards.0.rank }} ?
+    </div>
+    <br>
 	<hr>
 	
 	<div class="playername">You</div>

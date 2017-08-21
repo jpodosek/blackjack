@@ -53,11 +53,12 @@ public class GamePlayController {
 	// setting these in the constructor won't allow replaying within the same
 	// application session
 	@GetMapping("pregame")
-	public String showPreGamePlayPage() {
+	public String showPreGamePlayPage(Model model) {
 		deck = new Deck();
 		deck.shuffle();
 		wallet = 100; // setting wallet = 100 to allow clean slate for testing.
 		//user.getPlayerWallet();
+		model.addAttribute("wallet", wallet);
 		return "gameplay/pregame";
 
 	}
@@ -131,7 +132,15 @@ public class GamePlayController {
 		// only allow page to display if deck and wallet are NOT empty
 		if ((deck.getCardsLeft() > 0) && wallet > 0) {
 			//change wallet to user.getPlayerWallet();
-
+//			boolean overBet = false;
+//			if(betAmount > wallet) {
+//				overBet = true;
+//				model.addAttribute("wallet", wallet);
+//				model.addAttribute("betAmount", betAmount);
+//				model.addAttribute("overBet", overBet);
+//		
+//				return "gameplay/pregame";
+//			}
 			roundOutcome = "";
 			// get get amount and display
 			this.betAmount = betAmount;
