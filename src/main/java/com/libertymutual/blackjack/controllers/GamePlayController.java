@@ -41,7 +41,6 @@ public class GamePlayController {
 		// deck = new Deck();
 		// deck.shuffle();
 		roundOutcome = "";
-		// wallet = 100;
 	}
 
 	@GetMapping("") // in the URL; only about INCOMING URL request entered from browser
@@ -57,8 +56,8 @@ public class GamePlayController {
 	public String showPreGamePlayPage() {
 		deck = new Deck();
 		deck.shuffle();
-		wallet = 100;
-		// setting wallet = 100 to allow clean slate for testing.
+		wallet = 100; // setting wallet = 100 to allow clean slate for testing.
+		//user.getPlayerWallet();
 		return "gameplay/pregame";
 
 	}
@@ -122,10 +121,6 @@ public class GamePlayController {
 	// return "gameplay/endofround";
 	// }
 
-	// while(wallet > 0) {
-	//
-	// }
-
 	// The bet amount on pregame posts to game; this post below picks up that value
 	// and adds to model to render
 	// Kicking off the Game
@@ -135,6 +130,7 @@ public class GamePlayController {
 
 		// only allow page to display if deck and wallet are NOT empty
 		if ((deck.getCardsLeft() > 0) && wallet > 0) {
+			//change wallet to user.getPlayerWallet();
 
 			roundOutcome = "";
 			// get get amount and display
@@ -151,8 +147,8 @@ public class GamePlayController {
 			dealer.setHand(dealerHand);
 
 			userHand.addCard(deck.drawCard());
-			userHand.addCard(deck.drawCard());
 			dealerHand.addCard(deck.drawCard());
+			userHand.addCard(deck.drawCard());
 			dealerHand.addCard(deck.drawCard());
 
 			// add userHand to model
@@ -179,7 +175,7 @@ public class GamePlayController {
 	@PostMapping("stay")
 	public String stay(Model model) {
 		if((deck.getCardsLeft() > 0) && wallet > 0) {
-
+			
 			int dealerHandScore = dealerHand.getHandScore();
 			int userHandScore = userHand.getHandScore();
 
@@ -229,6 +225,7 @@ public class GamePlayController {
 			model.addAttribute("userHand", userHand);
 			model.addAttribute("dealerHand", dealerHand);
 			model.addAttribute("roundOutcome", roundOutcome);
+			//model.addAttribute("showDealerSecondCard", );
 			// System.out.println("This should be an unreachable part of logic.");
 			return "gameplay/outcome";
 		}
@@ -271,6 +268,7 @@ public class GamePlayController {
 			model.addAttribute("userHand", userHand);
 			model.addAttribute("dealerHand", dealerHand);
 			model.addAttribute("roundOutcome", roundOutcome);
+			//model.addAttribute("showDealerSecondCard", );
 			return "gameplay/game"; // take user to game page and display bet
 		}
 		// deck or wallet has runout. direct to ranout page and end game
