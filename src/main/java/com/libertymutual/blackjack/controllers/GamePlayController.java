@@ -1,17 +1,11 @@
 package com.libertymutual.blackjack.controllers;
 
-import java.util.ArrayList;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.libertymutual.blackjack.models.Card;
 import com.libertymutual.blackjack.models.Deck;
 import com.libertymutual.blackjack.models.GamePlay;
 import com.libertymutual.blackjack.models.Hand;
@@ -31,28 +25,20 @@ public class GamePlayController {
 	Hand dealerHand;
 	GamePlay round;
 	String roundOutcome;
+	private int dealerHandScore;
+	private int userHandScore ;
 	
 	public GamePlayController() {
 		// create two players
 		user = new Player();
 		dealer = new Player();
-		// Create new shuffled Deck; //moved this to constructor - should only happen
-		// once
-		// deck = new Deck();
-		// deck.shuffle();
+	
 		roundOutcome = "";
 	}
 
-	@GetMapping("") // in the URL; only about INCOMING URL request entered from browser
-	public String showIndexPage() {
-		System.out.println("Showing the home page.");
-		return "gameplay/index"; // path to a file (under the templates folder) to send back to browser
-	}
 
 	// this mapping resets the initial state of the game.
-	// setting these in the constructor won't allow replaying within the same
-	// application session
-	@GetMapping("pregame")
+	@GetMapping({"", "pregame"})
 	public String showPreGamePlayPage(Model model) {
 		deck = new Deck();
 		deck.shuffle();
@@ -115,32 +101,13 @@ public class GamePlayController {
 		
 	}
 
-	// @PostMapping("endofround")
-	// public String endofRound() {
-	// //maybe betAmount=0 here
-	// //display current wallet amouunt
-	// return "gameplay/endofround";
-	// }
-
-	// The bet amount on pregame posts to game; this post below picks up that value
-	// and adds to model to render
-	// Kicking off the Game
-
+	
 	@PostMapping("bet")
 	public String startRound(@RequestParam(name = "betAmount") int betAmount, Model model) {
 
 		// only allow page to display if deck and wallet are NOT empty
 		if ((deck.getCardsLeft() > 0) && wallet > 0) {
-			//change wallet to user.getPlayerWallet();
-//			boolean overBet = false;
-//			if(betAmount > wallet) {
-//				overBet = true;
-//				model.addAttribute("wallet", wallet);
-//				model.addAttribute("betAmount", betAmount);
-//				model.addAttribute("overBet", overBet);
-//		
-//				return "gameplay/pregame";
-//			}
+			
 			roundOutcome = "";
 			// get get amount and display
 			this.betAmount = betAmount;
@@ -176,24 +143,20 @@ public class GamePlayController {
 		user.setPlayerWallet(0);// reset wallet
 		return "gameplay/ranout";
 
-		// //draw cards from deck
-		// Card dealerCard1 = deck.drawCard();
-		// Card dealerCard2 = deck.drawCard();
 	}
 
 	@PostMapping("stay")
 	public String stay(Model model) {
 		if((deck.getCardsLeft() > 0) && wallet > 0) {
 			
-			int dealerHandScore = dealerHand.getHandScore();
-			int userHandScore = userHand.getHandScore();
+			dealerHandScore = dealerHand.getHandScore();
+			userHandScore = userHand.getHandScore();
 
 			while (dealerHand.getHandScore() < 17) {
 				// deck.getCardsLeft();
 				dealerHand.addCard(deck.drawCard());
 				dealerHandScore = dealerHand.getHandScore();
 			}
-
 			
 			if (dealerHandScore < 21 && userHandScore == 21) {
 				//user wins
@@ -237,8 +200,6 @@ public class GamePlayController {
 			model.addAttribute("userHand", userHand);
 			model.addAttribute("dealerHand", dealerHand);
 			model.addAttribute("roundOutcome", roundOutcome);
-			//model.addAttribute("showDealerSecondCard", );
-			// System.out.println("This should be an unreachable part of logic.");
 			return "gameplay/outcome";
 		}
 
@@ -249,7 +210,7 @@ public class GamePlayController {
 
 	@PostMapping("hit")
 	public String hitMe(Model model) {
-		int userHandScore;
+
 
 		// only allow page to display if deck and wallet are NOT empty
 		if ((deck.getCardsLeft() > 0) && wallet > 0) {
@@ -273,8 +234,6 @@ public class GamePlayController {
 			}
 
 			// user has not busted. display gameplay page again with options to hit or stay
-			//Getting an error: NullContext for variable Rank Error (line 37)/ 
-			//tried duplicating this outside while loop, still doesn't fix
 			model.addAttribute("betAmount", betAmount);
 			model.addAttribute("wallet", wallet);
 			model.addAttribute("userHand", userHand);
